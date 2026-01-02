@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FPS Vending Smart Screen</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">🌾 Smart PDS</div>
+            <div class="device-id">FPS-PUNE-001</div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-display">
+            <!-- Icon / Animation Container -->
+            <div class="visual-container" id="visual-container">
+                <div class="pulse-ring"></div>
+                <div class="icon" id="main-icon">👋</div>
+            </div>
+
+            <!-- Status Text -->
+            <h1 id="status-heading">Welcome</h1>
+            <p id="status-message">Please Scan your Ration Card or Fingerprint</p>
+
+            <!-- Details Card (Hidden by default) -->
+            <div class="details-card hidden" id="details-card">
+                <div class="detail-row">
+                    <span class="label">Beneficiary</span>
+                    <span class="value" id="user-name">--</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Entitlement</span>
+                    <span class="value" id="user-entitlement">-- kg</span>
+                </div>
+                <div class="detail-row highlight">
+                    <span class="label">Dispensing</span>
+                    <span class="value">5.0 kg</span>
+                </div>
+            </div>
+            
+            <!-- Receipt Card (Hidden by default) -->
+            <div class="details-card hidden" id="receipt-card">
+                 <div class="detail-row">
+                    <span class="label">Transaction ID</span>
+                    <span class="value receipt-code" id="tx-id">--</span>
+                </div>
+                 <div class="detail-row">
+                    <span class="label">Status</span>
+                    <span class="value success">Success</span>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="indicator">
+                <div class="dot active"></div> System Online
+            </div>
+            <div class="blockchain-status">
+                Hyperledger Fabric Connected
+            </div>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
