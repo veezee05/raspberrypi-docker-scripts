@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="visual-container processing">
+    <div class="icon">RUNNING</div>
+    <div class="pulse-ring"></div>
+</div>
+<h1>DATA_QUERY</h1>
+<p id="status-message">
+    {% if step == 'blockchain' %}
+    ACCESSING DISTRIBUTED LEDGER (DFO / GOVT SERVER)...
+    {% elif step == 'government' %}
+    COMMUNICATING WITH CENTRAL BIOMETRIC AUTHORITY...
+    {% else %}
+    EXECUTING SUBROUTINE... PLEASE STAND BY.
+    {% endif %}
+    <span class="terminal-cursor"></span>
+</p>
+
+<script>
+    const step = "{{ step }}";
+    const endpoint = step === 'blockchain' ? '/api/verify-rfid' : '/api/verify-fingerprint';
+
+    // Safety Timeout (20 seconds) in case of system hang
+    const safetyTimeout = setTimeout(() => {
+        window.location.href = "{{ url_for('error') }}?message=" + encodeURIComponent("System response timeout. Please try again.");
+    }, 20000);
+
+    fetch(endpoint)
+        .then(response => response.json())
+        .then(data => {
+            clearTimeout(safetyTimeout);
+            if (data.status === 'success') {
+                if (data.message) {
+                    // Show message briefly if it's "New scan"
+                    document.getElementById('status-message').innerText = data.message;
+                    setTimeout(() => window.location.href = data.next, 2000);
+                } else {
+                    window.location.href = data.next;
+                }
+            } else {
+                window.location.href = "{{ url_for('error') }}?message=" + encodeURIComponent(data.message);
+            }
+        })
+        .catch(err => {
+            clearTimeout(safetyTimeout);
+            window.location.href = "{{ url_for('error') }}?message=" + encodeURIComponent("System communication failure.");
+        });
+</script>
+{% endblock %}

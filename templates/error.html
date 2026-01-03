@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="visual-container">
+    <div class="security-warning-large" style="color: var(--security-red);">!</div>
+</div>
+<h1 style="color: var(--security-red); letter-spacing: 5px; margin-top: 1rem;">SECURITY_BREACH</h1>
+<p id="status-message" style="color: var(--security-red); border-color: var(--security-red);">
+    UNAUTHORIZED ACCESS DETECTED. ENFORCING DATA PRIVACY PROTOCOLS.
+</p>
+
+<div class="details-card" style="border-color: var(--security-red);">
+    <p style="color: var(--security-red); font-weight: bold; text-transform: uppercase;">
+        {{ message }}
+    </p>
+    <p style="margin-top: 1rem; font-size: 0.8rem;">
+        THIS ATTEMPT HAS BEEN LOGGED. RETURNING TO STANDBY MODE.
+    </p>
+</div>
+
+<script>
+    // Activate security header and body mode (Red Accents)
+    document.body.classList.add('security-mode');
+    document.querySelector('header').classList.add('security-header');
+
+    // Automatically return to welcome after 15 seconds
+    setTimeout(() => {
+        document.body.classList.remove('security-mode');
+        document.querySelector('header').classList.remove('security-header');
+        window.location.href = "{{ url_for('index') }}";
+    }, 15000);
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="visual-container">
+    <div class="icon" style="color: var(--warning-yellow);">ID_SCAN</div>
+    <div class="pulse-ring"></div>
+</div>
+<h1>RFID VERIFICATION</h1>
+<p id="status-message">INPUT CREDENTIALS VIA MAGNETIC INTERFACE.<span class="terminal-cursor"></span></p>
+
+<form id="rfid-form" method="POST" action="{{ url_for('scan_rfid') }}">
+    <input type="password" name="rfid_input" id="rfid_input" class="dummy-input" autofocus autocomplete="off">
+</form>
+
+<div class="instruction-box">
+    <b>DUMMY CASE:</b> Press any <b>number key (1-9)</b> to simulate scanning an RFID card. <br>
+    (Try 1, 2, or 3 for a valid user, others for error)
+</div>
+
+<script>
+    const input = document.getElementById('rfid_input');
+    // Ensure input stays focused
+    document.addEventListener('click', () => input.focus());
+
+    input.addEventListener('input', (e) => {
+        if (input.value.length >= 1) {
+            document.getElementById('rfid-form').submit();
+        }
+    });
+
+    // Inactivity Redirect
+    let inactivityTimer = setTimeout(() => {
+        window.location.href = "{{ url_for('index') }}";
+    }, 15000); // 15 seconds
+
+    document.addEventListener('keydown', () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            window.location.href = "{{ url_for('index') }}";
+        }, 15000);
+    });
+</script>
+{% endblock %}

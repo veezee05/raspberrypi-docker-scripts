@@ -1,21 +1,21 @@
-# Use python 3.9 slim as base
-FROM python:3.9-slim
+# Use python 3.9 slim (bookworm) as base for stability
+FROM python:3.9-slim-bookworm
 
 # Install system dependencies
-# - docker: to allow the blockchain_client.py to run `docker exec` commands (Docker-in-Docker client side)
-# - pcscd, libpcsclite-dev, swig: for pyscard (Smart Card)
-# - build-essential: for compiling python modules
-# - curl: to install docker
+# - chromium: for Kiosk mode browser
+# - x11-xserver-utils, xauth: for X11 forwarding
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     pcscd \
     libpcsclite-dev \
     swig \
+    chromium \
+    x11-xserver-utils \
+    xauth \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Docker CLI
-# Install Docker CLI (Static Binary to avoid repo issues on Debian Trixie/Testing)
 ENV DOCKER_VERSION=24.0.5
 RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o docker.tgz \
     && tar xzvf docker.tgz --strip 1 -C /usr/local/bin docker/docker \
@@ -30,8 +30,11 @@ RUN pip install flask requests pyscard RPi.GPIO
 # Copy source code
 COPY . .
 
+# Make entrypoint executable
+RUN chmod +x entrypoint.sh
+
 # Expose Flask Port
 EXPOSE 5000
 
 # Entrypoint
-CMD ["python", "server.py"]
+ENTRYPOINT ["./entrypoint.sh"]

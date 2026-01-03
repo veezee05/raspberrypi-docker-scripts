@@ -68,7 +68,7 @@ class HardwareInterface:
             # Motor ON
             pass
         else:
-            print("[HW] Lid OPEN / Motor ON")
+            print("**DUMMY CASE: Auger Motor ON / Lid OPEN**")
         
         # Helper loop
         current_weight = 0.0
@@ -89,7 +89,7 @@ class HardwareInterface:
             # Motor OFF
             pass
         else:
-             print("[HW] Lid CLOSED / Motor OFF")
+             print("**DUMMY CASE: Auger Motor OFF / Lid CLOSED**")
              
         return current_weight
 

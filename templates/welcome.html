@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="visual-container">
+    <div class="icon" style="color: var(--terminal-green);">[ WELCOME ]</div>
+    <div class="pulse-ring"></div>
+</div>
+<h1>System Initialized</h1>
+<p id="status-message">READY FOR COOPERATIVE INTERACTION. PRESS [SPACE] TO BEGIN.<span class="terminal-cursor"></span>
+</p>
+
+<div class="instruction-box">
+    <b>DUMMY CASE:</b> Press the <b>Space Bar</b> on your keyboard to navigate to the RFID scan page.
+</div>
+
+<script>
+    document.addEventListener('keydown', function (event) {
+        if (event.code === 'Space') {
+            window.location.href = "{{ url_for('scan_rfid') }}";
+        }
+    });
+</script>
+{% endblock %}

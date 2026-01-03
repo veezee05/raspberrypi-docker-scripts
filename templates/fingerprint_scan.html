@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="visual-container">
+    <div class="icon" style="color: var(--terminal-green);">BIO_SCAN</div>
+    <div class="pulse-ring"></div>
+</div>
+<h1>BIOMETRIC LOCK</h1>
+<p id="status-message">PROVIDE DERMAL SAMPLES FOR AUTHENTICATION.<span class="terminal-cursor"></span></p>
+
+<form id="fp-form" method="POST" action="{{ url_for('scan_fingerprint') }}">
+    <input type="password" name="fp_input" id="fp_input" class="dummy-input" autofocus autocomplete="off">
+</form>
+
+<div class="details-card" style="margin-top: 1rem; border-color: var(--terminal-green);">
+    <p>Time remaining: <b id="countdown">15</b> seconds</p>
+</div>
+
+<div class="instruction-box">
+    <b>DUMMY CASE:</b> Press any <b>number key (1-9)</b> to simulate fingerprint scan. <br>
+    (If it matches the RFID key, it's a "Gov record" match. Otherwise, it's a "New scan".)
+</div>
+
+<script>
+    const input = document.getElementById('fp_input');
+    document.addEventListener('click', () => input.focus());
+
+    input.addEventListener('input', (e) => {
+        if (input.value.length >= 1) {
+            document.getElementById('fp-form').submit();
+        }
+    });
+
+    // Countdown Timer
+    let timeLeft = 15;
+    const countdownEl = document.getElementById('countdown');
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        countdownEl.innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            window.location.href = "{{ url_for('index') }}";
+        }
+    }, 1000);
+
+    // Reset timer on keypress (optional, but good for UX)
+    document.addEventListener('keydown', () => {
+        // We'll keep it simple: no reset for the biometric scan to force interaction
+    });
+</script>
+{% endblock %}
