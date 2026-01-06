@@ -9,10 +9,32 @@
 </p>
 
 <div class="instruction-box">
-    <b>DUMMY CASE:</b> Press the <b>Space Bar</b> on your keyboard to navigate to the RFID scan page.
+    <b>ACTION REQUIRED:</b> Press the <b>Physical Button</b> on the device to begin the process.
 </div>
 
 <script>
+    // Poll for physical button press
+    function checkButton() {
+        fetch('/api/check-button')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = "{{ url_for('scan_rfid') }}";
+                } else {
+                    // Retry polling
+                    setTimeout(checkButton, 500);
+                }
+            })
+            .catch(err => {
+                console.error("Error checking button:", err);
+                setTimeout(checkButton, 1000);
+            });
+    }
+
+    // Start polling on page load
+    document.addEventListener('DOMContentLoaded', checkButton);
+
+    // Keep Space Bar as a fallback for accessibility/development
     document.addEventListener('keydown', function (event) {
         if (event.code === 'Space') {
             window.location.href = "{{ url_for('scan_rfid') }}";

@@ -56,6 +56,16 @@ def save_local_fingerprint(fp_data):
 def index():
     return render_template('welcome.html')
 
+@app.route('/api/check-button')
+def check_button():
+    if hw_interface:
+        hw_interface.wait_for_button_press()
+        return jsonify({"status": "success"})
+    else:
+        # If no hardware, just succeed immediately for testing (same as mock)
+        time.sleep(1)
+        return jsonify({"status": "success"})
+
 @app.route('/scan-rfid', methods=['GET', 'POST'])
 def scan_rfid():
     if request.method == 'POST':

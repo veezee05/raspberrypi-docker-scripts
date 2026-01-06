@@ -1,0 +1,17 @@
+# Use python 3.9 slim (bookworm) as base for stability
+FROM python:3.9-slim-bookworm
+
+# Set working directory
+WORKDIR /setup
+
+# Copy installation scripts
+COPY setup_scripts/ ./setup_scripts/
+
+# Make scripts executable
+RUN chmod +x setup_scripts/*.sh
+
+# Run installation logic (Setup only)
+RUN ./setup_scripts/install_all.sh
+
+# This container's job is done after build or a simple verification run
+CMD ["echo", "[SETUP] Environment preparation complete. All libraries and dependencies installed."]

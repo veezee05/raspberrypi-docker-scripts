@@ -8,6 +8,7 @@ REAL_HARDWARE = os.getenv("REAL_HARDWARE", "FALSE").upper() == "TRUE"
 if REAL_HARDWARE:
     try:
         import RPi.GPIO as GPIO
+        from gpiozero import Button, PWMOutputDevice
         from hx711 import HX711
         from smartcard.System import readers
         print("[HW] Drivers Loaded Successfully.")
@@ -23,9 +24,22 @@ class HardwareInterface:
              self._setup_gpio()
 
     def _setup_gpio(self):
-        GPIO.setmode(GPIO.BCM)
-        # Add GPIO Setup Logic here
-        pass
+        # Using gpiozero which handles setmode internally
+        self.button = Button(24, bounce_time=0.05) if REAL_HARDWARE else None
+        self.motor = PWMOutputDevice(18) if REAL_HARDWARE else None
+        print(f"[HW] GPIO Configured: Button(24), Motor(18)")
+
+    def wait_for_button_press(self):
+        """Blocks until the physical button is pressed."""
+        if REAL_HARDWARE:
+            print("[HW] Waiting for physical button press...")
+            self.button.wait_for_press()
+            print("[HW] Physical button pressed!")
+        else:
+            print("[HW] MOCK: Waiting for physical button (Pressing SPACE in frontend will skip this).")
+            # In mock mode, we just return immediately to allow frontend testing
+            time.sleep(0.5)
+        return True
 
     def read_smartcard(self):
         if REAL_HARDWARE:
@@ -65,8 +79,8 @@ class HardwareInterface:
         self.lid_open = True
         
         if REAL_HARDWARE:
-            # Motor ON
-            pass
+            # Motor ON (Full speed)
+            self.motor.value = 1.0
         else:
             print("**DUMMY CASE: Auger Motor ON / Lid OPEN**")
         
@@ -76,7 +90,7 @@ class HardwareInterface:
             time.sleep(0.5)
             if REAL_HARDWARE:
                  # Read Scale
-                 current_weight += 1.0 # Placeholder
+                 current_weight += 0.5 # Simulation-like increment for now
             else:
                  current_weight += random.uniform(0.5, 1.0)
             
@@ -87,7 +101,7 @@ class HardwareInterface:
         self.lid_open = False
         if REAL_HARDWARE:
             # Motor OFF
-            pass
+            self.motor.off()
         else:
              print("**DUMMY CASE: Auger Motor OFF / Lid CLOSED**")
              

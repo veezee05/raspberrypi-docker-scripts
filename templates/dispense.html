@@ -67,36 +67,40 @@
     const icon = document.getElementById('dispense-icon');
     const status = document.getElementById('status-message');
 
-    // Start Dispensing
-    fetch('/api/start-dispense')
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'completed') {
-                icon.innerText = "SUCCESS";
-                icon.style.color = "var(--terminal-green)";
-                icon.classList.remove('rotating');
-                status.innerText = "TRANSFER COMPLETE. SUBJECT MAY COLLECT DEPOSIT.";
-                document.getElementById('dispense-title').innerText = "DATA_LOGGED";
+    function startDispense() {
+        fetch('/api/start-dispense')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'completed') {
+                    icon.innerText = "SUCCESS";
+                    icon.style.color = "var(--terminal-green)";
+                    icon.classList.remove('rotating');
+                    status.innerText = "TRANSFER COMPLETE. SUBJECT MAY COLLECT DEPOSIT.";
+                    document.getElementById('dispense-title').innerText = "DATA_LOGGED";
 
-                // Show TxID
-                const card = document.getElementById('user-details');
-                const row = document.createElement('div');
-                row.className = 'detail-row';
-                row.style.borderTop = "2px solid var(--terminal-green)";
-                row.innerHTML = `<span class="label">TX_HASH</span><span class="value" style="color: var(--terminal-green); font-size: 0.7rem;">${data.tx_id}</span>`;
-                card.appendChild(row);
+                    // Show TxID
+                    const card = document.getElementById('user-details');
+                    const row = document.createElement('div');
+                    row.className = 'detail-row';
+                    row.style.borderTop = "2px solid var(--terminal-green)";
+                    row.innerHTML = `<span class="label">TX_HASH</span><span class="value" style="color: var(--terminal-green); font-size: 0.7rem;">${data.tx_id}</span>`;
+                    card.appendChild(row);
 
-                document.getElementById('auger-info').innerHTML = "[ BLOCKCHAIN_SYNC ] FINAL TRANSACTION COMMITTED TO FABRIC LEDGER.";
+                    document.getElementById('auger-info').innerHTML = "[ BLOCKCHAIN_SYNC ] FINAL TRANSACTION COMMITTED TO FABRIC LEDGER.";
 
-                setTimeout(() => window.location.href = "{{ url_for('index') }}", 15000);
-            }
-        });
+                    setTimeout(() => window.location.href = "{{ url_for('index') }}", 15000);
+                }
+            });
+    }
 
-    // Auger Animation
+    // Auger Animation and Motor Activation
     setTimeout(() => {
         icon.innerText = "FLOW";
         icon.style.color = "var(--warning-yellow)";
         status.innerText = "AUGER_ACTIVE: DISPENSING IN PROGRESS...";
+
+        // Trigger Backend Dispense (Motor + Scale)
+        startDispense();
 
         // Spawn "grains"
         const interval = setInterval(() => {
