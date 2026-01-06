@@ -25,20 +25,26 @@ class HardwareInterface:
 
     def _setup_gpio(self):
         # Using gpiozero which handles setmode internally
-        self.button = Button(24, bounce_time=0.05) if REAL_HARDWARE else None
+        # pull_up=True means the pin is HIGH by default, and button pulls it to GND (LOW).
+        # This is the most common configuration for Raspberry Pi buttons.
+        self.button = Button(24, pull_up=True, bounce_time=0.1) if REAL_HARDWARE else None
         self.motor = PWMOutputDevice(18) if REAL_HARDWARE else None
-        print(f"[HW] GPIO Configured: Button(24), Motor(18)")
+        
+        status = "REAL" if REAL_HARDWARE else "MOCK"
+        print(f"[HW] GPIO Configured ({status}): Button(24, pull_up=True), Motor(18)")
 
     def wait_for_button_press(self):
         """Blocks until the physical button is pressed."""
         if REAL_HARDWARE:
-            print("[HW] Waiting for physical button press...")
+            print("[HW] Waiting for PHYSICAL button press on GPIO 24...")
+            # wait_for_press blocks until the pin goes LOW (since pull_up=True)
             self.button.wait_for_press()
-            print("[HW] Physical button pressed!")
+            print("[HW] PHYSICAL button pressed!")
         else:
-            print("[HW] MOCK: Waiting for physical button (Pressing SPACE in frontend will skip this).")
-            # In mock mode, we just return immediately to allow frontend testing
-            time.sleep(0.5)
+            print("[HW] MOCK: Waiting for button... (Simulating 2s delay)")
+            # In mock mode, we wait a bit so it doesn't "automatically" skip the page
+            time.sleep(2)
+            print("[HW] MOCK: Button simulation complete.")
         return True
 
     def read_smartcard(self):

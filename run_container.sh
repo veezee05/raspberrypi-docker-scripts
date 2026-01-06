@@ -26,6 +26,7 @@ docker run -d \
     --memory="512m" \
     --restart unless-stopped \
     -e DISPLAY=$DISPLAY \
+    -e REAL_HARDWARE=TRUE \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /run/pcscd/pcscd.comm:/run/pcscd/pcscd.comm \
