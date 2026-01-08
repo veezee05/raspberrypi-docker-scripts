@@ -26,6 +26,10 @@
     [ SYSTEM_LOG ] AUGER_VELOCITY: 100% | STATUS: ROTATING
 </div>
 
+<div class="instruction-box" id="level-info" style="border-color: var(--warning-yellow); margin-top: 10px;">
+    [ SENSOR_LOG ] CONTAINER_FILL_LEVEL: <span id="grain-level">--</span>%
+</div>
+
 <style>
     @keyframes rotate {
         from {
@@ -101,6 +105,18 @@
 
         // Trigger Backend Dispense (Motor + Scale)
         startDispense();
+
+        // Update level every second
+        const levelInterval = setInterval(() => {
+            fetch('/api/container-level')
+                .then(res => res.json())
+                .then(levelData => {
+                    document.getElementById('grain-level').innerText = levelData.percentage;
+                    if (!status.innerText.includes("IN PROGRESS")) {
+                        clearInterval(levelInterval);
+                    }
+                });
+        }, 1000);
 
         // Spawn "grains"
         const interval = setInterval(() => {

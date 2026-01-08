@@ -66,6 +66,16 @@ def check_button():
         time.sleep(1)
         return jsonify({"status": "success"})
 
+@app.route('/api/container-level')
+def container_level():
+    """Returns the current grain level in the container."""
+    if hw_interface:
+        level = hw_interface.get_container_level()
+        # Assume 200mm is empty and 50mm is full for the logic
+        percentage = max(0, min(100, int((200 - level) / 1.5))) 
+        return jsonify({"status": "success", "level_mm": level, "percentage": percentage})
+    return jsonify({"status": "success", "level_mm": 100, "percentage": 50})
+
 @app.route('/scan-rfid', methods=['GET', 'POST'])
 def scan_rfid():
     if request.method == 'POST':

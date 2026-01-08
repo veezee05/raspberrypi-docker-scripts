@@ -23,6 +23,6 @@ curl -fsSL "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCK
 
 # 3. Install Python Dependencies
 echo "[SETUP] Installing Python Dependencies..."
-pip install --no-cache-dir flask requests pyscard RPi.GPIO gpiozero
+pip install --no-cache-dir flask requests pyscard RPi.GPIO gpiozero adafruit-circuitpython-vl53l0x adafruit-blinka
 
 echo "[SETUP] All installations complete."
